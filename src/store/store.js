@@ -5,6 +5,7 @@ import { getLimitProducts } from './request.js';
 export const useProductsStore = defineStore('auth', {
     state: () => ({
         productsData: [],
+        cart: JSON.parse(localStorage.getItem('cart')) || [],
     }),
     getters: {
         getProductsTitle: (state) => {
@@ -27,7 +28,10 @@ export const useProductsStore = defineStore('auth', {
                 return state.productsData.map(product => product.image);
             }
             return [];
-        }
+        },
+        cartItemCount: (state) => {
+            return state.cart.length; // Conta o número de itens no carrinho
+          }
     },
     actions: {
         async fetchLimitProducts() {
@@ -37,6 +41,15 @@ export const useProductsStore = defineStore('auth', {
             } catch (error) {
                 console.error('Erro ao obter produtos:', error);
             }
+        },
+        addToCart(product) {
+            
+
+            this.cart.push(product);
+            localStorage.setItem('cart', JSON.stringify(this.cart));
+
+            alert(`${product.title} foi adicionado ao carrinho!`);
         }
     },
-})
+},
+)
