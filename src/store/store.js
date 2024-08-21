@@ -8,30 +8,12 @@ export const useProductsStore = defineStore('auth', {
         cart: JSON.parse(localStorage.getItem('cart')) || [],
     }),
     getters: {
-        getProductsTitle: (state) => {
-            if (state.productsData && state.productsData.length > 0) {
-                // Retorna os títulos de todos os produtos como um array
-                return state.productsData.map(product => product.title);
-            }
-            return [];
-        },
-        getProductsPrice: (state) => {
-            if (state.productsData && state.productsData.length > 0) {
-                // Retorna os títulos de todos os produtos como um array
-                return state.productsData.map(product => product.price);
-            }
-            return [];
-        },
-        getProductsImage: (state) => {
-            if (state.productsData && state.productsData.length > 0) {
-                // Retorna os títulos de todos os produtos como um array
-                return state.productsData.map(product => product.image);
-            }
-            return [];
-        },
-        cartItemCount: (state) => {
-            return state.cart.length; // Conta o número de itens no carrinho
-          }
+        getProductsTitle: (state) => state.productsData.map(product => product.title),
+        getProductsPrice: (state) => state.productsData.map(product => product.price),
+        getProductsImage: (state) => state.productsData.map(product => product.image),
+        getProductId: (state) => state.productsData.map(product => product.id),
+        cartItemCount: (state) => state.cart.length,
+        totalPrice: (state) => state.cart.reduce((sum, item) => sum + item.price, 0),
     },
     actions: {
         async fetchLimitProducts() {
@@ -43,12 +25,14 @@ export const useProductsStore = defineStore('auth', {
             }
         },
         addToCart(product) {
-            
-
             this.cart.push(product);
             localStorage.setItem('cart', JSON.stringify(this.cart));
 
             alert(`${product.title} foi adicionado ao carrinho!`);
+        },
+        removeFromCart(productId) {
+            this.cart = this.cart.filter(product => product.id !== productId); // Remove o item com o id correspondente
+            localStorage.setItem('cart', JSON.stringify(this.cart));
         }
     },
 },
